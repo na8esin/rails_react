@@ -1,35 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useCallback, useState } from 'react'
 import './App.css'
 
+type Pager = {
+  page: number;
+}
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState<Pager>();
+
+  // 本当はquery-stringなどを使うとする
+  const page = 1;
+
+  const handleSubmit = async () => {
+    console.log('helo');
+
+    try {
+      const response = await post('http://127.0.0.1:3000/api/sample', {page});
+      const json = await response.json();
+      setData(json)
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      {isLoading ? (
+        <div>loding...</div>
+      ) : (
+        <div>hello!</div>
+      )}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <button onClick={handleSubmit}>hello</button>
+      <div>{data?.page}</div>
     </>
   )
+}
+
+async function post(url: string, data: any) {
+  return await fetch(url, {
+    method: "POST",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      body: JSON.stringify(data),
+    },
+  });
 }
 
 export default App
