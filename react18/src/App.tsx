@@ -47,8 +47,8 @@ async function post(url: string, data: any) {
     mode: "cors",
     headers: {
       "Content-Type": "application/json",
-      body: JSON.stringify(data),
     },
+    body: JSON.stringify(data),
   });
 }
 
