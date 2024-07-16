@@ -4,11 +4,17 @@ module Api
   # sample
   class SampleController < ApplicationController
     def index
-      page = params[:page]
+      page = converted_page
 
       page.match?(/\A\d\z/)
 
       render json: { page:, type: page.class }
+    end
+
+    private
+
+    def converted_page
+      params[:page].to_s
     end
   end
 end
